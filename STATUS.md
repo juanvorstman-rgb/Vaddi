@@ -84,8 +84,19 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
       (generate); device list — **space** to select the iPhone, **Enter**; push notifications **No**.
    Then paste the build URL here and it goes under Build links.
 2. **claude.ai project instructions — the three §7 edits.** The repo `VADDI_V4.md` is canonical and
-   correct; the chat Project copy is the only stale one. Exact replacement text is in the session
-   notes / `DECISIONS.md` (2026-09-21 Phase 1 entry).
+   correct; the chat Project copy is the only stale one. Open the **Vaddi** project → **Instructions**,
+   make these three replacements, save.
+
+   **(a) §7 intro, last sentence.** Replace `The cache is the main cost lever.` with:
+   > The number and size of calls per session is the main cost lever.
+
+   **(b) §7 rule 5 — replace the whole rule with:**
+   > 5. **Cache what the provider lets you cache, and nothing else.** With Google Places that is place IDs (indefinitely) and coordinates (30 days), keyed by area cell and category and shared across groups. Display fields (name, rating, hours, photos, price) are fetched fresh per session and never stored. The cost lever is fewer and smaller calls per session, not a shared cache of results: one search per "suggest", photos only for the cards shown, details only when a card is opened, and a cap on free suggests per trip.
+
+   **(c) §7 budgets** — replace the bullet starting `Cache hit rate on ideas…` with:
+   > - Suggests per active trip: measured from Phase 3; the free cap per trip is set from this number, not guessed.
+
+   The rest of §7 is unchanged.
 3. *(Optional, later)* Enable **leaked-password protection** in Supabase Auth — only matters once
    email/password sign-in exists (v4 defers passwords; v1 is anonymous). Safe to ignore for now.
 4. *(Optional, housekeeping)* `C:\Users\juanv\vaddi-archive-2026-09-21.zip` is now the only copy of
