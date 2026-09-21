@@ -14,7 +14,7 @@ project `vaddi` (`mryoyzqkvinykehrwmri`), state files, icons, EAS/bundle IDs reu
 | Theme tokens, light + dark, `useTheme()` only; no hex outside `src/theme` (ESLint-enforced) | ✅ |
 | WCAG AA contrast gate (`scripts/check-contrast.ts`, 18 pairs) | ✅ |
 | Inter font (expo-font), splash held until loaded | ✅ |
-| Brand kit ported (mark, gradient*, loader, empty state) | ✅ (*solid fill until Phase 2 — see below) |
+| Brand kit ported (mark, gradient*, loader, empty state) | ✅ (*solid coral fill; real gradient lands at the start of Phase 2) |
 | One card `IdeaCard` — primary + compact variants, expo-image, 44pt reactions, haptics, optimistic | ✅ |
 | Madrid fixtures (8 ideas: eat/drink/do) | ✅ |
 | Four states on every screen + dev control to force any state | ✅ |
@@ -105,9 +105,6 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
 ## Accepted (not defects)
 - **Anonymous-access advisor warning** on `profiles` is **intentional** — anonymous sign-in is v4's
   entry model (§5.1); those users must reach their own row.
-- **`BrandGradient` is a solid coral fill** until the start of Phase 2. `expo-linear-gradient` is
-  **approved**, but it is a native module: adding it now would make it missing from the dev builds
-  above. It lands with the next pair of dev builds (DECISIONS.md 2026-09-22).
 
 ## Open questions
 - **Places cost model** (Phase 3 entry): with no cross-user cache of display fields, is per-session
@@ -122,5 +119,7 @@ ideas**. Prove the UX and the UX budgets (§5) before paying for a single API ca
 needed: `trips`, `trip_members` (+ reactions on ideas) — each gets a migration and RLS, proven by
 query, like `profiles` did.
 
-First change of the phase: add `expo-linear-gradient` and rebuild both dev clients, so the native
-module and the builds stay in step.
+**First change of the phase:** add `expo-linear-gradient` (approved 2026-09-22) and rebuild both
+dev clients, so the native module and the builds stay in step. `BrandGradient` becomes a real
+coral→teal gradient in the same change — it is a solid coral fill until then, which is why it looks
+flat on the builds above.
