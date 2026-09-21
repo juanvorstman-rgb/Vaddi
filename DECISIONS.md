@@ -132,3 +132,34 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   fine-grained token couldn't create/push; a classic `repo`-scope token was used instead.
 - **claude.ai project-instruction §7 edits deferred by Juan** (A8) — the repo `VADDI_V4.md` already
   has them; the chat Project copy is Juan's to update.
+
+## 2026-09-22 — Phase 1 close-out
+
+### Token incident and the Secrets rule
+- **The `GH_TOKEN` classic PAT is treated as leaked and is dead.** It was set with `setx` and
+  therefore appeared in command lines and session transcripts. Juan revoked it at GitHub; this
+  session deleted it from `HKCU\Environment` (it was still there) and confirmed `HKLM` never
+  had it. — A secret that has been printed anywhere must be assumed compromised, regardless of
+  who saw it.
+- **Repo and history verified clean.** `git grep -I -l ghp_ HEAD`, `git log --all -S ghp_` and an
+  untracked-file grep all return nothing. The token never entered a commit. Worth noting for
+  future incidents: `juanvorstman-rgb/Vaddi` is a **public** repo, so a committed secret would
+  have been world-readable immediately.
+- **GitHub now authenticates through gh's credential store.** `gh auth login` (web device flow,
+  keyring) + `gh auth setup-git`; read and write to `origin` both verified. No token in any
+  command, env var or remote URL.
+- **New `CLAUDE.md` "Secrets" section.** One home per credential — GitHub in gh's store, EAS in
+  its own CLI session, Supabase through the MCP, app runtime in gitignored `.env` — and a
+  printed token is a leaked token: revoke, replace with a store login, verify the history.
+  — Codifies the incident so it is a rule and not a memory.
+
+### Dependency approvals (Juan, via the close-out brief)
+- **`expo-linear-gradient` approved — added at the *start of Phase 2*, not now.** It is a native
+  module, so adding it today would leave it missing from the development builds just produced
+  and break them until they were rebuilt. It goes in with the next pair of dev builds, and
+  `BrandGradient` becomes a real coral→teal gradient in the same change. — Native deps must
+  land with a build, not between builds.
+- **`@expo/vector-icons` approved, retroactively.** Installed in Phase 1 B2 for the tab icons
+  because the SDK 57 template no longer bundles it. It is a JS-only asset package, so no
+  rebuild is implied. — Closes the B2 deviation; both items leave STATUS.md's "Accepted (not
+  defects)" list.

@@ -45,6 +45,23 @@ These are mistakes the v3 app made. Do not repeat them.
 5. **Usage log + quotas + kill switch ship with the first paid call**, not after (v4 §7.9–10).
 6. **One Supabase client module, config from env.** No hardcoded URL/keys in source.
 
+## Secrets
+A secret never appears in a command string, a log line, a commit or the repo. Not in a
+`setx`, not in an env var set on a command line, not echoed to check it, not pasted into a
+prompt. Each service has one place its credential lives:
+
+- **GitHub** → gh's credential store (`gh auth login`, then `gh auth setup-git`). Never a
+  PAT in `GH_TOKEN`, never a token in a remote URL.
+- **EAS / Expo** → its own CLI session (`eas login`). Never `EXPO_TOKEN` on a command line.
+- **Supabase** → the MCP connection. Never a service_role key on disk or in a shell.
+- **App runtime** → `.env`, gitignored. Only `EXPO_PUBLIC_` values may reach the client, and
+  only the Supabase URL + publishable key qualify (see hard rule 1).
+
+**A token that has been printed anywhere — a terminal, a log, a transcript, a screenshot —
+is leaked.** Treat it as compromised whether or not anyone else saw it: revoke it at the
+provider, replace it with a credential-store login, and confirm the repo and its history are
+clean (`git grep`, `git log -S`). Do not reuse it, do not "just this once" it.
+
 ## Repo layout
 ```
 VADDI_V4.md  AUDIT.md  CLAUDE.md  STATUS.md  DECISIONS.md  README.md
