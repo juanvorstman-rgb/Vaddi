@@ -74,3 +74,15 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   same pattern as sharp in Phase 0). `scripts/` excluded from tsc + ESLint (uses Node globals).
 - **ESLint bans hex-colour string literals outside `src/theme`** (`no-restricted-syntax`), verified
   it fires on a violation and is exempt inside the theme folder.
+
+### B2 — brand kit + card
+- **Dependencies added: `expo-image`, `expo-haptics`** (pre-approved). `expo install` also added the
+  `expo-image` config plugin to `app.json` (expected).
+- **`@expo/vector-icons` installed — DEVIATION from the pre-approved list.** The SDK 57 template no
+  longer bundles it, but B3 explicitly calls for tab icons "from the vector-icons package"; treated
+  as plan-directed. Flag for Juan if he'd rather a different icon source.
+- **`BrandGradient` is a solid coral fill, not a real gradient.** A true coral→teal gradient needs
+  `expo-linear-gradient`, which is NOT pre-approved — so it's skipped and recorded (Juan's tasks).
+  Swapping in a `LinearGradient` later is a one-line change; nothing else depends on it.
+- **Primary action button = coral background with navy text** (5.3:1, AA). White-on-coral (2.8:1)
+  would fail, so the CTA uses the navy brand colour for its label.

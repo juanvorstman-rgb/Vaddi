@@ -12,7 +12,9 @@
       "bundleIdentifier": "com.vaddi.app",
       "buildNumber": "11",
       "supportsTablet": true,
-      "associatedDomains": ["applinks:vaddi.app"]
+      "associatedDomains": [
+        "applinks:vaddi.app"
+      ]
     },
     "android": {
       "package": "com.vaddi.app",
@@ -33,7 +35,10 @@
               "pathPrefix": "/join"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -50,7 +55,8 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200
         }
-      ]
+      ],
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
