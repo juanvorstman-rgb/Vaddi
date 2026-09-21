@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "Vaddi",
+    "slug": "vaddi",
+    "owner": "juanvman",
+    "version": "4.0.0",
+    "orientation": "portrait",
+    "scheme": "vaddi",
+    "userInterfaceStyle": "automatic",
+    "icon": "./assets/images/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.vaddi.app",
+      "buildNumber": "11",
+      "supportsTablet": true,
+      "associatedDomains": ["applinks:vaddi.app"]
+    },
+    "android": {
+      "package": "com.vaddi.app",
+      "versionCode": 10,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#1E293B"
+      },
+      "predictiveBackGestureEnabled": false,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "vaddi.app",
+              "pathPrefix": "/join"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#1E293B",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b2b4d432-daf5-43c4-9165-014d21a284d9"
+      }
+    }
+  }
+}
