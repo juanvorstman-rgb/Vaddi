@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DevStateProvider } from '@/dev/devState';
+import { SessionProvider } from '@/lib/session';
 import { ThemeProvider } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -37,9 +38,11 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <DevStateProvider>
-          <Stack screenOptions={{ headerShown: false }} />
-        </DevStateProvider>
+        <SessionProvider>
+          <DevStateProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+          </DevStateProvider>
+        </SessionProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

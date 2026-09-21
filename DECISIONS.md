@@ -97,3 +97,19 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   Every empty/error/offline offers a next step (v4 §5.10). No search/filters/map on Discover (v4 §6).
 - **Bundling validated** with `expo export` (Android bundle built clean) as the headless proxy for
   "the app boots".
+
+### B4 — anonymous auth + profiles
+- **Dependencies added: `@supabase/supabase-js`, `@react-native-async-storage/async-storage`,
+  `react-native-url-polyfill`** (all pre-approved). One client in `src/lib/supabase.ts` from env.
+- **Anonymous sign-in on first launch** (`SessionProvider`), persisted + auto-refreshed; no account
+  wall (v4 §5.1). `useSession()` exposes it.
+- **Migration `0001_profiles`** applied via MCP `apply_migration`: owner-only select/update, no
+  insert/delete via API, trigger creates the row on signup. **`0002_profiles_harden`** followed to
+  clear advisors: revoked EXECUTE on the SECURITY DEFINER trigger functions and scoped policies
+  `to authenticated`.
+- **RLS proven** with `execute_sql` (other user sees 0, owner sees 1 own row, update works, insert
+  errors 42501, delete affects 0) — saved under `supabase/tests/0001_profiles_rls.sql`.
+- **Two advisor warnings left, both accepted:** anonymous-access policies (intentional — v4's entry
+  model) and leaked-password protection (dashboard toggle, irrelevant until email/password auth).
+  Recorded as Juan's-choice, not defects.
+- **Backfilled a profile row** for the one pre-existing anon user (created before the trigger).
