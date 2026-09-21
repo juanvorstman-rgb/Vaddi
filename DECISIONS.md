@@ -113,3 +113,22 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   model) and leaked-password protection (dashboard toggle, irrelevant until email/password auth).
   Recorded as Juan's-choice, not defects.
 - **Backfilled a profile row** for the one pre-existing anon user (created before the trigger).
+
+### B5 — device builds
+- **Dependency added: `expo-dev-client`** (pre-approved). EAS `development` profile gets Android
+  `buildType: apk`.
+- **Android dev build queued** (EAS auto-generated the keystore, no interaction):
+  https://expo.dev/accounts/juanvman/projects/vaddi/builds/855afebe-1622-4159-bf9e-11bcc015fd9d
+- **iOS dev build deferred to Juan** — non-interactive EAS can't do Apple login / device
+  registration for internal distribution. Commands recorded in STATUS.md.
+- **Added `ios.infoPlist.ITSAppUsesNonExemptEncryption = false`** (default taken) — EAS flagged it
+  missing; setting it avoids the App Store encryption-compliance prompt.
+
+### Part A outcomes (guided)
+- Google Gemini + Places keys deleted (A3); Supabase anonymous sign-ins enabled + verified (A4);
+  old Supabase project `wnatkfpktymevbmdewyw` deleted, only `vaddi` remains (A5); GitHub CLI
+  installed and repo pushed to `juanvorstman-rgb/Vaddi` (A6); EAS already authed as `juanvman` (A7).
+- **GitHub auth via classic PAT in `GH_TOKEN`** (persisted with `setx`; never echoed/committed). The
+  fine-grained token couldn't create/push; a classic `repo`-scope token was used instead.
+- **claude.ai project-instruction §7 edits deferred by Juan** (A8) — the repo `VADDI_V4.md` already
+  has them; the chat Project copy is Juan's to update.

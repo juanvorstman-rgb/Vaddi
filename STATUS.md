@@ -3,61 +3,73 @@
 *Updated 2026-09-21. Single source of truth for where the build is.*
 
 ## Phase 0 — Audit and reset — COMPLETE
+See `AUDIT.md` and `DECISIONS.md` (2026-09-21 reset). Fresh repo, SDK 57 skeleton, new Supabase
+project `vaddi` (`mryoyzqkvinykehrwmri`), state files, icons, EAS/bundle IDs reused.
 
-This run created the new repo and skeleton:
-- Fresh Expo app scaffolded: **SDK 57**, React Native 0.86.3, expo-router, **TypeScript strict**.
-- Template stripped to one empty screen (`src/app/index.tsx`, `src/app/_layout.tsx`).
-- Checks green: `tsc --noEmit`, `expo lint`, `expo-doctor` (**21/21**).
-- `VADDI_V4.md` (with the §7.5 replacement) and `AUDIT.md` at root.
-- `CLAUDE.md`, `STATUS.md`, `DECISIONS.md`, `README.md` written.
-- App config: `app.json` (name Vaddi, bundle `com.vaddi.app`, build 11 / versionCode 10,
-  universal links for `vaddi.app/join`, navy splash/adaptive, internet-only permissions),
-  `eas.json` (development / preview / production).
-- `.env` (Supabase URL + publishable key) + `.env.example`; both `.env*` and `legacy/` gitignored.
-- App icons generated from the v3 logo (placeholder): icon (no-alpha navy), adaptive, splash, favicon.
-- Brand source art in `assets/brand/`.
-- v3 reference in `legacy/` (gitignored, TS/ESLint-excluded) — **delete after Phase 1**.
-- New Supabase project `vaddi` (ref `mryoyzqkvinykehrwmri`, eu-west-3) is the backend; its
-  schema is untouched by design.
-- Git initialized; first commit made. (Remote push pending — see Juan's tasks.)
-- Old app archived to `C:\Users\juanv\vaddi-archive-2026-09-21.zip` (real zip, verified to
-  contain `vaddi-project/AUDIT.md` and `vaddi-project/app/trip/[id].js`, no `.env`, no
-  node_modules). **Old folder NOT auto-deleted** — `rm -rf` and `rimraf` both returned EBUSY
-  because this session's shell is rooted inside `coplannr\vaddi-project`; per plan, not forced.
-  Left for Juan (task 6). The archive is the backup.
+## Phase 1 — Skeleton — COMPLETE
 
-## Phase 1 — Skeleton — NEXT
+| Item (v4 §11 / §12) | Status |
+|---|---|
+| 3 tabs `Discover · Trip · Profile` (expo-router) | ✅ |
+| Theme tokens, light + dark, `useTheme()` only; no hex outside `src/theme` (ESLint-enforced) | ✅ |
+| WCAG AA contrast gate (`scripts/check-contrast.ts`, 18 pairs) | ✅ |
+| Inter font (expo-font), splash held until loaded | ✅ |
+| Brand kit ported (mark, gradient*, loader, empty state) | ✅ (*solid fill — see tasks) |
+| One card `IdeaCard` — primary + compact variants, expo-image, 44pt reactions, haptics, optimistic | ✅ |
+| Madrid fixtures (8 ideas: eat/drink/do) | ✅ |
+| Four states on every screen + dev control to force any state | ✅ |
+| Discover: Vaddi's pick + 3 compact, detail route, no search/filters/map | ✅ |
+| Trip: "No trip yet" → Create-a-trip (Phase-2 placeholder) | ✅ |
+| Profile: guest status, display-name field, dev control | ✅ |
+| Anonymous auth on launch, persisted; `useSession()`; no account wall | ✅ |
+| `profiles` table + RLS (owner-only; no insert/delete via API; signup trigger) | ✅ (migrations 0001, 0002) |
+| RLS proven by query; saved `supabase/tests/0001_profiles_rls.sql` | ✅ |
+| Security advisors run + fixable ones fixed | ✅ (2 accepted — see tasks) |
+| `tsc`, `expo lint`, `expo-doctor` (21/21), contrast gate all green | ✅ |
+| Android dev build started | ✅ (link below) |
+| iOS dev build | ⛔ needs Juan (Apple login) — see tasks |
 
-Scope (v4 §11 + AUDIT.md §7 entry checklist):
-- Navigation: 3 tabs `Discover | Trip | Profile` (expo-router).
-- Design tokens: port `legacy/utils/ThemeContext.js` → TypeScript `useTheme()`; light + dark.
-- **One** reusable card component (photo, name, "why this", distance/price, reactions, one action).
-- Anonymous auth (Supabase) that upgrades to a full account; one Supabase client module reading env.
-- Brand kit ported from `legacy/components/Brand.js`.
-- Dev builds running on a **real iPhone and a real Android**.
-- Seed a stub `usage_log` table before any paid call arrives (Phase 3, but keep the habit).
-- Keep `tsc` / `expo lint` / `expo-doctor` green on every commit.
-- **Definition of done** for each feature: v4 §12.
+**Build links**
+- Android (development, EAS): https://expo.dev/accounts/juanvman/projects/vaddi/builds/855afebe-1622-4159-bf9e-11bcc015fd9d
 
-## Juan's tasks (could not be automated this run)
-1. **Supabase — enable Anonymous sign-ins** for project `vaddi` (`mryoyzqkvinykehrwmri`):
-   Dashboard → Authentication → Providers → Anonymous → enable. (No CLI/MCP path.)
-2. **Supabase — delete the dead old project** `wnatkfpktymevbmdewyw`: Dashboard → Project
-   Settings → General → Delete project. (Frees the 2-project free-tier cap.)
-3. **Rotate/delete the exposed provider keys** (`gcloud` not installed here, so not automated):
-   - **Gemini key** — Google AI Studio → **API keys** (aistudio.google.com/apikey): delete the key.
-   - **Google Places key** — Google Cloud Console → **APIs & Services → Credentials**: delete the
-     key. (Both were shipped in v3 client builds; values were never printed.)
-4. **Replace §7.5** in the **claude.ai Project instructions** with the new text (already applied to
-   the repo `VADDI_V4.md`; the chat Project copy needs the same edit).
-5. **GitHub remote** — `gh` is not installed here, so no repo was pushed. Create a **private** repo
-   `vaddi` and push (e.g. install GitHub CLI then `gh repo create vaddi --private --source=. --push`,
-   or add a remote manually).
-6. **Delete the old folder** `C:\Users\juanv\coplannr` by hand — automated deletion failed
-   with EBUSY (a shell was rooted inside it during this run). Close any tool/editor holding it,
-   then delete. Backup: `C:\Users\juanv\vaddi-archive-2026-09-21.zip`.
+## Verify on device (Juan — once the Android build installs)
+- [ ] All three tabs render in **light and dark** (toggle system theme).
+- [ ] In Profile, use **DEV · FORCE SCREEN STATE** to see each of **loading / empty / error / offline**
+      on Discover, Trip and Profile — each offers a next step.
+- [ ] Bump **system font size** up — text scales, nothing clips.
+- [ ] Set a **display name**, force-quit, reopen — the name is still there (survives restart).
+- [ ] Discover: tap the pick → detail opens with the same data + primary action; react yes/no (haptic).
+
+## Juan's tasks
+1. **iOS dev build (Apple login can't be automated).** In the VS Code terminal, in order:
+   1. `npx eas device:create`  (register your iPhone — follow the URL/QR)
+   2. `npx eas build --profile development --platform ios`  (interactive; signs in to Apple)
+   Then tell me when both are done and paste the build URL.
+2. **Delete the old folder** `C:\Users\juanv\coplannr` by hand — automated deletion still returns
+   EBUSY (a shell is rooted inside it this session). Backup: `C:\Users\juanv\vaddi-archive-2026-09-21.zip`.
+3. **claude.ai project instructions** — apply the three §7 edits (already in repo `VADDI_V4.md`).
+4. **Canonical `VADDI_V4.md`** — a fully canonical replacement is still pending (A2); the repo copy
+   has the §7 edits applied in the meantime.
+5. *(Optional, later)* Enable **leaked-password protection** in Supabase Auth — only matters once
+   email/password sign-in exists (v4 defers passwords; v1 is anonymous). Safe to ignore for now.
+6. *(Optional)* The GitHub push uses a classic PAT stored in `GH_TOKEN` (via `setx`). Revoke/rotate
+   it whenever you like; a fresh `gh auth login` would replace it.
+
+## Accepted (not defects)
+- **Anonymous-access advisor warning** on `profiles` is **intentional** — anonymous sign-in is v4's
+  entry model (§5.1); those users must reach their own row.
+- **`BrandGradient` is a solid coral fill**, not a real gradient — `expo-linear-gradient` isn't on the
+  pre-approved dependency list. Approve it and it's a one-line swap.
+- **`@expo/vector-icons`** was installed though not pre-approved — the SDK 57 template no longer bundles
+  it and B3 needs tab icons. Flag if you'd prefer a different icon source.
 
 ## Open questions
-- **Places cost model** (marked for **Phase 3 entry**): with no cross-user cache of display
-  fields allowed, is per-session Google Places cost acceptable, or do we evaluate a
-  friendlier-terms source (Foursquare / OSM)? Decide before writing the places layer.
+- **Places cost model** (Phase 3 entry): with no cross-user cache of display fields, is per-session
+  Google Places cost acceptable, or do we evaluate Foursquare / OSM? Decide before the places layer.
+
+## Phase 2 — The loop with fake data — NEXT (v4 §11)
+Create a trip (destination + dates), invite by link, join with a name, a minimal web page for the
+invite link (see trip, react, see plan), react, lock into a loose day plan — all on **hardcoded
+ideas**. Prove the UX and the UX budgets (§5) before paying for a single API call. Tables likely
+needed: `trips`, `trip_members` (+ reactions on ideas) — each gets a migration and RLS, proven by
+query, like `profiles` did.

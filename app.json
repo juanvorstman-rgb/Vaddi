@@ -14,7 +14,10 @@
       "supportsTablet": true,
       "associatedDomains": [
         "applinks:vaddi.app"
-      ]
+      ],
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.vaddi.app",
