@@ -63,3 +63,14 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   cache/ranking, loop logic) is still needed through the Phase 3 places/AI work; deletion moved
   to end of Phase 3 (B0). Updated in `legacy/README.md` and `CLAUDE.md`.
 - **`.claude/settings.local.json` gitignored** (B0) — local Claude Code settings stay out of the repo.
+
+### B1 — theme tokens
+- **Dependency added: `@expo-google-fonts/inter`** (pre-approved) — Inter 400/500/600/700 per v4 §6.
+  `expo-font` was already in the template.
+- **Five type sizes** (xs 11 / sm 13 / md 16 / lg 20 / xl 28) — v4 §6 "five sizes at most".
+- **Functional colours** success/warning/error added alongside the v4 §6 brand palette; light values
+  darkened (e.g. success `#0F7A4E`) so text-on-surface stays ≥4.5:1.
+- **Contrast gate runs via `npx tsx scripts/check-contrast.ts`** (ephemeral tool, no project dep,
+  same pattern as sharp in Phase 0). `scripts/` excluded from tsc + ESLint (uses Node globals).
+- **ESLint bans hex-colour string literals outside `src/theme`** (`no-restricted-syntax`), verified
+  it fires on a violation and is exempt inside the theme folder.

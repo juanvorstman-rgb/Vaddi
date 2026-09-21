@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 
+import { useTheme } from '@/theme';
+
 export default function Index() {
+  const { colors, typography } = useTheme();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Vaddi</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[typography.display, { color: colors.textPrimary }]}>Vaddi</Text>
     </View>
   );
 }
@@ -13,9 +16,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
   },
 });

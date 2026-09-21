@@ -20,6 +20,7 @@
   "exclude": [
     "node_modules",
     "legacy",
-    "dist"
+    "dist",
+    "scripts"
   ]
 }

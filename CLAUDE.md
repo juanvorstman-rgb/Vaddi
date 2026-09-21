@@ -63,7 +63,8 @@ Real v3 files kept to re-read patterns (theme, brand kit, rec cache/ranking, loo
 - **Delete the whole folder when Phase 3 ends.**
 
 ## Before every commit
-Run and keep green: `npx tsc --noEmit`, `npx expo lint`, `npx expo-doctor`.
+Run and keep green: `npx tsc --noEmit`, `npx expo lint`, `npx expo-doctor`,
+`npx tsx scripts/check-contrast.ts` (WCAG AA gate on theme tokens).
 
 ## How decisions are made
 - Product and architecture calls happen **with Juan in claude.ai chat** and land in
