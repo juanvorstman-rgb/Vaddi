@@ -49,3 +49,17 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
 - **Removed template cruft** (AGENTS.md, LICENSE, example screens/components/hooks/images,
   reset-project script) as part of stripping to one empty screen.
 - **`production` build profile `autoIncrement: true`** as a reasonable store default.
+
+## 2026-09-21 — Phase 1 (approved plan)
+
+- **VADDI_V4.md §7 amended after the Places caching finding (AUDIT.md §6).** Three edits:
+  §7 intro cost-lever sentence → "The number and size of calls per session is the main cost
+  lever"; rule 5 → the "cache only what the provider lets you" text (place IDs + coords only);
+  §7 budget "cache hit rate ≥60%" → "suggests per active trip, measured from Phase 3". No
+  matching canonical `VADDI_V4*.md` was in Downloads (the one there predates §7.5), so the
+  edits were applied to the repo copy; **a fully canonical replacement from Juan is still
+  pending** (A2).
+- **`legacy/` retained until Phase 3, not Phase 1.** The v3 reference (theme, brand kit, rec
+  cache/ranking, loop logic) is still needed through the Phase 3 places/AI work; deletion moved
+  to end of Phase 3 (B0). Updated in `legacy/README.md` and `CLAUDE.md`.
+- **`.claude/settings.local.json` gitignored** (B0) — local Claude Code settings stay out of the repo.

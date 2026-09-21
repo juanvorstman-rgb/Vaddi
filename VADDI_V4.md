@@ -118,7 +118,7 @@ Progress is measured in gates, not features. No work on a later gate before the 
 
 **Principle: code first, cache second, model last.**
 
-Know where the money goes. A places search with ratings and opening hours costs far more than a cheap model call. Tokens matter. The places bill matters more. The cache is the main cost lever.
+Know where the money goes. A places search with ratings and opening hours costs far more than a cheap model call. Tokens matter. The places bill matters more. The number and size of calls per session is the main cost lever.
 
 **Rules:**
 1. **Every paid API call runs server-side.** Model and places calls go through backend functions. No provider key ever ships in the app.
@@ -134,7 +134,7 @@ Know where the money goes. A places search with ratings and opening hours costs 
 
 **Budgets. Starting targets, recalibrate with real data:**
 - Variable cost per active trip: target under €0.30. Alarm at €0.50.
-- Cache hit rate on ideas: above 60% once there is repeat traffic in a city.
+- Suggests per active trip: measured from Phase 3; the free cap per trip is set from this number, not guessed.
 - Total monthly spend before Gate 3: under €30, store fees aside. Stay inside free tiers as long as possible.
 
 **Every proposal for a new AI or places call must state:** expected calls per trip, cost per call, cache strategy, and what happens when the quota is hit.

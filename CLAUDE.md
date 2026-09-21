@@ -60,7 +60,7 @@ legacy/         READ-ONLY v3 reference — see below
 Real v3 files kept to re-read patterns (theme, brand kit, rec cache/ranking, loop logic).
 - **Never import from `legacy/`.** Nothing in `src/` may reference it.
 - It is gitignored, TS-excluded and ESLint-ignored.
-- **Delete the whole folder when Phase 1 ends.**
+- **Delete the whole folder when Phase 3 ends.**
 
 ## Before every commit
 Run and keep green: `npx tsc --noEmit`, `npx expo lint`, `npx expo-doctor`.

@@ -36,8 +36,11 @@ yarn-error.*
 .env*.local
 !.env.example
 
-# v3 reference, deleted after Phase 1
+# v3 reference, deleted after Phase 3
 legacy/
+
+# local Claude Code settings
+.claude/settings.local.json
 
 # typescript
 *.tsbuildinfo
