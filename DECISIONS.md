@@ -86,3 +86,14 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   Swapping in a `LinearGradient` later is a one-line change; nothing else depends on it.
 - **Primary action button = coral background with navy text** (5.3:1, AA). White-on-coral (2.8:1)
   would fail, so the CTA uses the navy brand colour for its label.
+
+### B3 — navigation, screens, four states
+- **No new dependencies.** Tabs, detail route and states use expo-router + already-installed libs.
+- **Four states via a `useScreenState` + `ScreenState` pattern.** A dev-only `DevStateProvider`
+  lets the Profile control force any screen into loading/empty/error/offline (v4 §5.8). Off in prod.
+- **Dev control pinned above Profile's state region** so it stays usable even when Profile itself is
+  forced into a state (otherwise you couldn't reset it).
+- **`/` redirects to `/discover`;** detail is `/idea/[id]`; `/create-trip` is a Phase-2 placeholder.
+  Every empty/error/offline offers a next step (v4 §5.10). No search/filters/map on Discover (v4 §6).
+- **Bundling validated** with `expo export` (Android bundle built clean) as the headless proxy for
+  "the app boots".

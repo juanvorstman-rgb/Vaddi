@@ -8,7 +8,9 @@ import {
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { DevStateProvider } from '@/dev/devState';
 import { ThemeProvider } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -33,8 +35,12 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <DevStateProvider>
+          <Stack screenOptions={{ headerShown: false }} />
+        </DevStateProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

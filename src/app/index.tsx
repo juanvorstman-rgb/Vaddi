@@ -1,20 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
-
-import { useTheme } from '@/theme';
+import { Redirect } from 'expo-router';
 
 export default function Index() {
-  const { colors, typography } = useTheme();
-  return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Text style={[typography.display, { color: colors.textPrimary }]}>Vaddi</Text>
-    </View>
-  );
+  return <Redirect href="/discover" />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
