@@ -1,4 +1,4 @@
-// src/data/fixtures.ts
+// src/data/fixtures/demo-ideas.ts
 // Hardcoded ideas for Phase 1 / Phase 2 — prove the UX before paying for a
 // single API call (v4 §11 Phase 2). Eight real Madrid spots across eat/drink/do.
 // Photos are placeholder URLs; real photos arrive with Places in Phase 3.
