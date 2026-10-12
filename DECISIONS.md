@@ -211,3 +211,51 @@ that needs neither.
   the only strings a friend reads outside the app and the launch market is despedidas in Spain.
   — **Open question for Juan:** the whole app's copy language. Flipping it is cheap now and
   expensive after Phase 3.
+
+## 2026-10-12 — v5 adopted (A1)
+
+- **`VADDI.md` (v5) is the direction document.** `VADDI_V4.md` moved to `legacy/` (gitignored, and
+  deleted with the rest of that folder when Phase 3 ends; v4 stays in git history). References
+  updated in `CLAUDE.md`, `README.md` and `.env.example`. — v5 supersedes v4; one direction doc,
+  no ambiguity about which one wins.
+- **Despedidas are the launch market.** The product is the organizer's caddie for a group event —
+  despedida, weekend away, celebration — not a generic trip planner. Phase 2's fixed ideas are
+  two despedida cities, which is why `madrid.ts` and `salou.ts` are the seed sets.
+- **Revenue order inverted: booking commissions first, organizer pass second.** Providers pay
+  first because Vaddi brings them a group that has already decided; the organizer pays second,
+  5.99 € per event, for the work that is theirs alone — the money and the chasing. Guests never
+  pay. — v5 §8.
+- **The Trip Pass for deciding is retired as a hypothesis.** No product has made people pay for
+  the group decision itself. What the organizer will pay for is the record: who has paid, dropout
+  recomputation, pay links, the reminder messages. — v5 §8.
+- **The legal line, now a hard rule.** Vaddi never collects payments for travel services and never
+  contracts them on the group's behalf, so it is neither organizer nor retailer under package
+  travel law and needs no agency licence or insolvency guarantee. Crossing it is a Gate 4 decision
+  with legal advice, never a feature. — v5 §8, enforced through §10.6.
+- **The guest web page is part of the product, not a nicety.** A friend joins from the link, with
+  a name, and reacts without installing anything (v5 §4, §11 Phase 2). It is in Phase 2's
+  definition of done, so B4 is not optional.
+- **`CLAUDE.md` gains v5 §10.6 and §10.10.** §10.6: anything that collects money or books on
+  behalf of users is refused and logged. §10.10: secrets never travel — already present as the
+  `Secrets` section, now also named in the working rules so it is read every session.
+  `Test what breaks silently` gains **the paid flag**, per v5 §10.11.
+
+### Product interface language — Spanish
+- **The UI goes in Spanish from here, through a single `src/i18n/es.ts`, with no i18n library.**
+  — The launch market is despedidas in Spain and the organizer is Spanish-speaking; the WhatsApp
+  templates already were. One language and one file means no runtime cost and nothing to
+  configure, and the file is the shape a library would consume if a second language ever becomes
+  real. Phase 1's screens still hold English strings inline and move to `es.ts` in B3 as each
+  screen is touched — nothing gets translated twice. Closes the open question from this morning.
+
+### Supabase MCP
+- **`.mcp.json` committed at the repo root**, pinning the hosted Supabase MCP server to
+  `project_ref=mryoyzqkvinykehrwmri`. — It holds no secret: the OAuth token lives in Claude Code's
+  own credential store, not in the file. Pinning the project ref means a session cannot reach any
+  other Supabase project by accident.
+
+### Android preview build
+- **There is none.** The previous run was interrupted at A1 before B1, so no `preview` build was
+  ever launched. The only `preview` on EAS is `ef56cff9` from 2026-01-26 — v3-era, nine months
+  old, predating the rebuild, and not usable. The only current build is the Android `development`
+  one from 2026-09-21.

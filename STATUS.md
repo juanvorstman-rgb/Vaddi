@@ -16,7 +16,7 @@ La parte de Supabase quedó bloqueada: ver «Pendiente del conector de Supabase�
 ### Restos del close-out — todos cerrados
 | Comprobación | Resultado |
 |---|---|
-| `VADDI_V4.md` es canónico (contiene «Cache what the provider lets you cache») | ✅ |
+| El doc de dirección era canónico (contenía «Cache what the provider lets you cache») | ✅ — ese `VADDI_V4.md` está ahora en `legacy/`, superado por `VADDI.md` (v5) |
 | `CLAUDE.md` tiene la sección `## Secrets` | ✅ |
 | `C:\Users\juanv\coplannr` | ✅ borrado |
 | `reg query HKCU\Environment /v GH_TOKEN` | ✅ no existe |
@@ -91,12 +91,15 @@ reactions / booking_clicks`.**
 ## Fase 2 — empezada el 2026-10-12, a medias
 
 Juan decidió seguir sin haber visto la Fase 1 en un móvil (su llamada, registrada en
-`DECISIONS.md`). El conector MCP de Supabase **no estaba disponible** y `VADDI.md` (v5) **no
-está en el repo**, así que se hizo solo lo que no depende de ninguna de las dos cosas.
+`DECISIONS.md`). El primer tramo se hizo sin `VADDI.md` (v5) y sin el conector MCP de Supabase,
+así que se limitó a lo que no dependía de ninguna de las dos cosas. **v5 ya está adoptado**; el
+conector es lo único que sigue bloqueando.
 
 ### Hecho
 | Paso | Qué | Commit |
 |---|---|---|
+| A1 | **v5 adoptado.** `VADDI.md` en la raíz, `VADDI_V4.md` movido a `legacy/`, referencias actualizadas en `CLAUDE.md`, `README.md` y `.env.example`, y las reglas §10.6 (nada de cobrar ni reservar en nombre de nadie) y §10.10 (los secretos no viajan) en `CLAUDE.md`. | `Direction: v5` |
+| idioma | **La interfaz va en español** desde ahora, con un único `src/i18n/es.ts` y sin librería de i18n. Las pantallas de Fase 1 se traducen en B3 al tocarlas. | `Direction: v5` |
 | deps | `expo-linear-gradient`, `expo-clipboard`, `expo-sharing` instaladas (las tres aprobadas). `expo-sharing` añadió su config plugin a `app.json`. | `a088b14` |
 | gradiente | `BrandGradient` ya es el gradiente real coral→teal, colores desde el tema. **Cierra el punto más viejo del repo.** | `a088b14` |
 | drift | `expo install --fix`, solo parches `57.0.x`. `expo install --check` fallaba antes. | `6339531` |
@@ -107,7 +110,6 @@ está en el repo**, así que se hizo solo lo que no depende de ninguna de las do
 ### No hecho, y por qué
 | Paso | Bloqueado por |
 |---|---|
-| A1 — adoptar v5 | `VADDI.md` no está en la raíz. La dirección vigente sigue siendo `VADDI_V4.md`. |
 | B1 — migración `0003_events`, RLS, RPCs, advisors, tipos | El conector MCP de Supabase. El brief prohíbe `execute_sql` para DDL, así que no hay atajo. |
 | B3 — pantallas de organizador | Dependen de las tablas de B1. |
 | B4 — página web de invitado | Depende del RPC `get_event_preview` de B1. |
@@ -150,10 +152,15 @@ project `vaddi` (`mryoyzqkvinykehrwmri`), state files, icons, EAS/bundle IDs reu
 | iOS dev build | ⛔ needs Juan + the iPhone — task 1 |
 
 **Build links**
-- Android (development, EAS) — **FINISHED**
-  - Build page: https://expo.dev/accounts/juanvman/projects/vaddi/builds/855afebe-1622-4159-bf9e-11bcc015fd9d
-  - Direct APK: https://expo.dev/artifacts/eas/mnnRWrvG2YV6r4vjlsxEYO3hfdh7ytdL8m10oKq7RTM.apk
-- iOS (development, EAS) — not built yet (task 1).
+- Android (**development**, EAS) — **FINISHED**, 2026-09-21. El único build utilizable hoy.
+  - Página del build: https://expo.dev/accounts/juanvman/projects/vaddi/builds/855afebe-1622-4159-bf9e-11bcc015fd9d
+  - APK directa: https://expo.dev/artifacts/eas/mnnRWrvG2YV6r4vjlsxEYO3hfdh7ytdL8m10oKq7RTM.apk
+  - Carga el JS desde este PC: hace falta `npx expo start` corriendo. Para una app que funcione
+    sola hace falta un build `preview`.
+- Android (**preview**) — **no existe.** El run del 2026-10-12 se interrumpió en A1 antes de B1,
+  así que nunca se lanzó. La única `preview` en EAS es `ef56cff9` del **2026-01-26**: de la época
+  de v3, nueve meses vieja, anterior a toda la reconstrucción. **No sirve.**
+- iOS — no hay ningún build de esta reconstrucción (tarea 3).
 
 ## Verify on device
 
@@ -196,23 +203,20 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
 
 **Lo que desbloquea la Fase 2, por orden de impacto:**
 
-1. **Poner `VADDI.md` (v5) en `C:\Users\juanv\vaddi\VADDI.md`.** Descargarlo del chat. Bloquea A1
-   (adoptar v5, mover `VADDI_V4.md` a `legacy/`, actualizar referencias) y con ello la dirección
-   vigente del producto.
-2. **Volver a añadir el conector de Supabase en Claude Code.** Bloquea B1 entero (migración
+1. **Autorizar el conector de Supabase.** `.mcp.json` ya está en el repo apuntando solo al
+   proyecto `mryoyzqkvinykehrwmri`; falta escribir `/mcp` en el chat de Claude Code, elegir
+   **supabase**, pulsar **Authenticate** y autorizar en el navegador. Bloquea B1 entero (migración
    `0003_events`, RLS, los RPCs `get_event_preview` / `join_event`, advisors, tipos en
-   `src/types/database.ts`) y por arrastre B3, B4, B5 y la Parte C. Sin él no hay backend de
-   Fase 2, y el brief prohíbe `execute_sql` para DDL, así que no hay atajo.
-3. **Ver la Fase 1 en un móvil.** No hace falta instalar nada: `npx expo start` en la terminal,
+   `src/types/database.ts`) y por arrastre B3, B4, B5 y la Parte C. El brief prohíbe
+   `execute_sql` para DDL, así que no hay atajo.
+2. **Ver la Fase 1 en un móvil.** No hace falta instalar nada: `npx expo start` en la terminal,
    pulsar `s` para cambiar a Expo Go, misma Wi-Fi, escanear el QR con Expo Go (Android) o con la
    cámara (iPhone). Es lo único que puede destapar fallos que no se ven en el PC: tipografía,
-   haptics, auth real en el dispositivo.
-4. **Decidir el idioma del producto.** Ahora mismo las tres plantillas de WhatsApp están en
-   español y la UI de la app en inglés. Cambiarlo hoy son 20 líneas; después de la Fase 3, no.
+   haptics, auth real en el dispositivo. **La Parte C espera a que Juan confirme esto.**
 
 **Cuando quieras:**
 
-5. **Registrar el iPhone y hacer el build de iOS** (requiere el iPhone en mano; el login de Apple
+3. **Registrar el iPhone y hacer el build de iOS** (requiere el iPhone en mano; el login de Apple
    no se puede automatizar). En la terminal, por orden:
    1. `npx eas device:create` — login de Apple (ID, contraseña, código 2FA en el iPhone), elegir
       el equipo, método **Website**. Abrir la URL/QR en el iPhone **con Safari**, permitir la
@@ -223,24 +227,13 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
       notificaciones push **No**.
 
    Pégame la URL del build y la pongo en *Build links*.
-6. **Instrucciones del proyecto en claude.ai — las tres ediciones §7.** Solo si v5 no las deja
-   obsoletas: cuando `VADDI.md` entre, lo que manda es v5 y esto se cae. El `VADDI_V4.md` del repo
-   es el canónico y está bien; la copia del proyecto en el chat es la única desactualizada. Abre el
-   proyecto **Vaddi** → **Instructions**, haz estos tres reemplazos y guarda.
+4. **Poner v5 en las instrucciones del proyecto de claude.ai.** Las tres ediciones §7 que había
+   pendientes aquí **ya no aplican**: v5 las incorpora y sustituye al documento entero. Abre el
+   proyecto **Vaddi** → **Instructions** y pega `VADDI.md` tal cual, reemplazando lo que hubiera.
 
-   **(a) §7 intro, last sentence.** Replace `The cache is the main cost lever.` with:
-   > The number and size of calls per session is the main cost lever.
-
-   **(b) §7 rule 5 — replace the whole rule with:**
-   > 5. **Cache what the provider lets you cache, and nothing else.** With Google Places that is place IDs (indefinitely) and coordinates (30 days), keyed by area cell and category and shared across groups. Display fields (name, rating, hours, photos, price) are fetched fresh per session and never stored. The cost lever is fewer and smaller calls per session, not a shared cache of results: one search per "suggest", photos only for the cards shown, details only when a card is opened, and a cap on free suggests per trip.
-
-   **(c) §7 budgets** — replace the bullet starting `Cache hit rate on ideas…` with:
-   > - Suggests per active trip: measured from Phase 3; the free cap per trip is set from this number, not guessed.
-
-   El resto de §7 no cambia.
-7. *(Opcional, más adelante)* Activar **leaked-password protection** en Supabase Auth — solo
+5. *(Opcional, más adelante)* Activar **leaked-password protection** en Supabase Auth — solo
    importa cuando exista login por email/contraseña (v4 lo aplaza; v1 es anónimo). Ignorable.
-8. *(Opcional, limpieza)* `C:\Users\juanv\vaddi-archive-2026-09-21.zip` es ya la única copia de la
+6. *(Opcional, limpieza)* `C:\Users\juanv\vaddi-archive-2026-09-21.zip` es ya la única copia de la
    app v3. Guárdalo o bórralo, da igual — nada depende de él.
 
 ## Accepted (not defects)
