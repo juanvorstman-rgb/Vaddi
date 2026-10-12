@@ -88,13 +88,38 @@ En disco solo hay `supabase/migrations/0001_profiles.sql`, `0002_profiles_harden
 `supabase/tests/0001_profiles_rls.sql`. **No existe nada de `events / members / ideas /
 reactions / booking_clicks`.**
 
-### Lo que falta para empezar la Fase 2
-- Dependencias aprobadas y **sin instalar**: `expo-linear-gradient`, `expo-clipboard`,
-  `expo-sharing`. Ya están `react-native-reanimated` 4.5.1 y `@supabase/supabase-js`.
-- Fixtures: solo Madrid. No hay Salou.
-- Ningún build `preview` en ninguna plataforma.
-- **Nadie ha confirmado la Fase 1 en un móvil.** La Fase 2 no empieza antes de eso.
-- `VADDI.md` (v5) no está en la raíz del repo; la dirección vigente sigue siendo `VADDI_V4.md`.
+## Fase 2 — empezada el 2026-10-12, a medias
+
+Juan decidió seguir sin haber visto la Fase 1 en un móvil (su llamada, registrada en
+`DECISIONS.md`). El conector MCP de Supabase **no estaba disponible** y `VADDI.md` (v5) **no
+está en el repo**, así que se hizo solo lo que no depende de ninguna de las dos cosas.
+
+### Hecho
+| Paso | Qué | Commit |
+|---|---|---|
+| deps | `expo-linear-gradient`, `expo-clipboard`, `expo-sharing` instaladas (las tres aprobadas). `expo-sharing` añadió su config plugin a `app.json`. | `a088b14` |
+| gradiente | `BrandGradient` ya es el gradiente real coral→teal, colores desde el tema. **Cierra el punto más viejo del repo.** | `a088b14` |
+| drift | `expo install --fix`, solo parches `57.0.x`. `expo install --check` fallaba antes. | `6339531` |
+| fixtures | `src/data/fixtures/` como carpeta: `madrid.ts` y `salou.ts`, 8 ideas cada una (3 eat / 3 drink / 2 do), con la forma de las columnas de `ideas`. Los `do` llevan página de listado de Civitatis **comprobada en vivo**. | `bd8bfb3` |
+| enlaces | `src/config/links.ts` con `SHARE_HOST` como única constante del host y `eventUrl(code)` → `https://<host>/e/<code>`. HTTPS siempre, nunca `vaddi://`. | `0bf920e` |
+| mensajes | `src/lib/messages.ts`: invitación, recordatorio de pago y decisión, en español. Verificados ejecutándolos (rangos de fecha dentro y entre meses, singular/plural, moneda es-ES, cero `vaddi://`). | `0bf920e` |
+
+### No hecho, y por qué
+| Paso | Bloqueado por |
+|---|---|
+| A1 — adoptar v5 | `VADDI.md` no está en la raíz. La dirección vigente sigue siendo `VADDI_V4.md`. |
+| B1 — migración `0003_events`, RLS, RPCs, advisors, tipos | El conector MCP de Supabase. El brief prohíbe `execute_sql` para DDL, así que no hay atajo. |
+| B3 — pantallas de organizador | Dependen de las tablas de B1. |
+| B4 — página web de invitado | Depende del RPC `get_event_preview` de B1. |
+| B5 — realtime | Depende de B1. |
+| B6 — build `preview` | Se puede lanzar, pero sin B3 mostraría la Fase 1 con gradiente nuevo. Pendiente de decidir si merece la pena. |
+| Parte C — publicar en Cloudflare Pages | Depende de B4. |
+
+### Ojo
+- **`SHARE_HOST` apunta a `vaddi.app`, que todavía no resuelve.** Juan no compra el dominio hasta
+  que la app funcione. Los enlaces están bien formados pero muertos hasta la Parte C.
+- **Idioma:** las tres plantillas de WhatsApp están en español; la UI de la app sigue en inglés.
+  Decidir el idioma del producto ahora es barato; después de la Fase 3, caro.
 
 ## Phase 0 — Audit and reset — COMPLETE
 See `AUDIT.md` and `DECISIONS.md` (2026-09-21 reset). Fresh repo, SDK 57 skeleton, new Supabase
@@ -167,19 +192,41 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
 - [ ] Set a **display name**, force-quit, reopen — the name is still there (survives restart).
 - [ ] Discover: tap the pick → detail opens with the same data + primary action; react yes/no (haptic).
 
-## Juan's tasks
-1. **Register the iPhone, then build for iOS** (needs the iPhone in hand; Apple login can't be
-   automated). In the VS Code terminal, in order:
-   1. `npx eas device:create` — sign in to Apple (ID, password, 2FA code on the iPhone), pick your
-      team, choose method **Website**. Open the printed URL/QR on the iPhone **in Safari**, allow
-      the profile download, then **Settings → Profile Downloaded → Install**.
-   2. `npx eas build --profile development --platform ios --no-wait` — Apple login again;
-      distribution certificate (reuse if offered, otherwise generate); provisioning profile
-      (generate); device list — **space** to select the iPhone, **Enter**; push notifications **No**.
-   Then paste the build URL here and it goes under Build links.
-2. **claude.ai project instructions — the three §7 edits.** The repo `VADDI_V4.md` is canonical and
-   correct; the chat Project copy is the only stale one. Open the **Vaddi** project → **Instructions**,
-   make these three replacements, save.
+## Tareas de Juan
+
+**Lo que desbloquea la Fase 2, por orden de impacto:**
+
+1. **Poner `VADDI.md` (v5) en `C:\Users\juanv\vaddi\VADDI.md`.** Descargarlo del chat. Bloquea A1
+   (adoptar v5, mover `VADDI_V4.md` a `legacy/`, actualizar referencias) y con ello la dirección
+   vigente del producto.
+2. **Volver a añadir el conector de Supabase en Claude Code.** Bloquea B1 entero (migración
+   `0003_events`, RLS, los RPCs `get_event_preview` / `join_event`, advisors, tipos en
+   `src/types/database.ts`) y por arrastre B3, B4, B5 y la Parte C. Sin él no hay backend de
+   Fase 2, y el brief prohíbe `execute_sql` para DDL, así que no hay atajo.
+3. **Ver la Fase 1 en un móvil.** No hace falta instalar nada: `npx expo start` en la terminal,
+   pulsar `s` para cambiar a Expo Go, misma Wi-Fi, escanear el QR con Expo Go (Android) o con la
+   cámara (iPhone). Es lo único que puede destapar fallos que no se ven en el PC: tipografía,
+   haptics, auth real en el dispositivo.
+4. **Decidir el idioma del producto.** Ahora mismo las tres plantillas de WhatsApp están en
+   español y la UI de la app en inglés. Cambiarlo hoy son 20 líneas; después de la Fase 3, no.
+
+**Cuando quieras:**
+
+5. **Registrar el iPhone y hacer el build de iOS** (requiere el iPhone en mano; el login de Apple
+   no se puede automatizar). En la terminal, por orden:
+   1. `npx eas device:create` — login de Apple (ID, contraseña, código 2FA en el iPhone), elegir
+      el equipo, método **Website**. Abrir la URL/QR en el iPhone **con Safari**, permitir la
+      descarga del perfil, y luego **Ajustes → Perfil descargado → Instalar**.
+   2. `npx eas build --profile preview --platform ios` — login de Apple otra vez; certificado de
+      distribución (reutilizar si lo ofrece, si no generar); perfil de aprovisionamiento
+      (generar); lista de dispositivos — **espacio** para marcar el iPhone, **Enter**;
+      notificaciones push **No**.
+
+   Pégame la URL del build y la pongo en *Build links*.
+6. **Instrucciones del proyecto en claude.ai — las tres ediciones §7.** Solo si v5 no las deja
+   obsoletas: cuando `VADDI.md` entre, lo que manda es v5 y esto se cae. El `VADDI_V4.md` del repo
+   es el canónico y está bien; la copia del proyecto en el chat es la única desactualizada. Abre el
+   proyecto **Vaddi** → **Instructions**, haz estos tres reemplazos y guarda.
 
    **(a) §7 intro, last sentence.** Replace `The cache is the main cost lever.` with:
    > The number and size of calls per session is the main cost lever.
@@ -190,11 +237,11 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
    **(c) §7 budgets** — replace the bullet starting `Cache hit rate on ideas…` with:
    > - Suggests per active trip: measured from Phase 3; the free cap per trip is set from this number, not guessed.
 
-   The rest of §7 is unchanged.
-3. *(Optional, later)* Enable **leaked-password protection** in Supabase Auth — only matters once
-   email/password sign-in exists (v4 defers passwords; v1 is anonymous). Safe to ignore for now.
-4. *(Optional, housekeeping)* `C:\Users\juanv\vaddi-archive-2026-09-21.zip` is now the only copy of
-   the v3 app. Keep it or delete it as you like — nothing depends on it.
+   El resto de §7 no cambia.
+7. *(Opcional, más adelante)* Activar **leaked-password protection** en Supabase Auth — solo
+   importa cuando exista login por email/contraseña (v4 lo aplaza; v1 es anónimo). Ignorable.
+8. *(Opcional, limpieza)* `C:\Users\juanv\vaddi-archive-2026-09-21.zip` es ya la única copia de la
+   app v3. Guárdalo o bórralo, da igual — nada depende de él.
 
 ## Accepted (not defects)
 - **Anonymous-access advisor warning** on `profiles` is **intentional** — anonymous sign-in is v4's
@@ -203,17 +250,26 @@ Stop the server with `Ctrl+C`. The app reloads on save while it's running.
 ## Open questions
 - **Places cost model** (Phase 3 entry): with no cross-user cache of display fields, is per-session
   Google Places cost acceptable, or do we evaluate Foursquare / OSM? Decide before the places layer.
+- **Idioma del producto.** Las plantillas de WhatsApp están en español, la UI en inglés. Decidirlo
+  antes de la Fase 3.
+- **Dominio `vaddi.app`.** Sin comprar por decisión de Juan hasta que la app funcione. La página de
+  invitado sale primero en un host `*.pages.dev` y `SHARE_HOST` se mueve en una línea.
 
-## Phase 2 — The loop with fake data — NEXT (v4 §11)
-**Does not start until Juan has seen Phase 1 running on a phone.**
+## Lo que queda de la Fase 2
+El avance está arriba, en **«Fase 2 — empezada el 2026-10-12, a medias»**. Lo que falta, por orden:
 
-Create a trip (destination + dates), invite by link, join with a name, a minimal web page for the
-invite link (see trip, react, see plan), react, lock into a loose day plan — all on **hardcoded
-ideas**. Prove the UX and the UX budgets (§5) before paying for a single API call. Tables likely
-needed: `trips`, `trip_members` (+ reactions on ideas) — each gets a migration and RLS, proven by
-query, like `profiles` did.
-
-**First change of the phase:** add `expo-linear-gradient` (approved 2026-09-22) and rebuild both
-dev clients, so the native module and the builds stay in step. `BrandGradient` becomes a real
-coral→teal gradient in the same change — it is a solid coral fill until then, which is why it looks
-flat on the builds above.
+1. **B1 — el backend.** Migración `0003_events`: `events`, `members`, `ideas`, `reactions`,
+   `booking_clicks`; RLS (los miembros leen todo lo de su evento; el organizador actualiza el
+   evento, el flag de pago y las ideas; el invitado solo su propia fila; nadie borra por API);
+   RPCs `get_event_preview(code)` para anónimos y `join_event(code, name)`; realtime en
+   `reactions` y `members`. Probado con `execute_sql` y guardado en `supabase/tests/`.
+2. **B3 — pantallas del organizador.** Crear evento (tipo, destino Madrid o Salou, fechas, nombre
+   generado y editable). Pestaña del evento, de arriba abajo y sin scroll: quién viene, qué está
+   decidido, quién falta por pagar, la lista de miembros con el toggle de pago que solo ve el
+   organizador, y la acción de compartir. Las tres plantillas de mensaje ya están hechas.
+3. **B4 — página web de invitado.** `src/app/e/[code].tsx` en web: preview por `get_event_preview`,
+   entrar con un nombre, y las mismas ideas, reacciones, plan y estado propio que la app.
+   Mobile-first, probada a 360 px. `expo export -p web` debe dar un sitio estático desplegable.
+4. **B5 — realtime** en reacciones y estado de miembros, en app y web.
+5. **B6 — build `preview`** de Android, y de iOS cuando el iPhone esté registrado.
+6. **Parte C — publicar** la página de invitado en Cloudflare Pages.

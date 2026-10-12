@@ -163,3 +163,51 @@ Product/architecture calls are made with Juan in claude.ai chat; Claude Code log
   because the SDK 57 template no longer bundles it. It is a JS-only asset package, so no
   rebuild is implied. — Closes the B2 deviation; both items leave STATUS.md's "Accepted (not
   defects)" list.
+
+## 2026-10-12 — Phase 2 groundwork (no backend yet)
+
+### Context
+The Supabase MCP connector was **not available** in this session and `VADDI.md` (v5) was not in
+the repo, so A1 (adopt v5), B1 (migration `0003_events`, RLS, RPCs, advisors, types), B4 (guest
+web page), B5 (realtime) and Part C (hosting) could not be done. What follows is the Phase 2 work
+that needs neither.
+
+### Calls Juan made explicitly
+- **Phase 2 started without a phone having shown Phase 1.** The brief gates Phase 2 on that;
+  Juan said to continue. — His call, recorded so the risk is visible: anything that only shows on
+  a device (fonts, haptics, auth on the real handset) is still unverified.
+- **`vaddi.app` is not bought yet**, and will not be until the app works. — So the guest page
+  ships on a `*.pages.dev` host first and `SHARE_HOST` moves in one line later.
+
+### Dependencies added (all pre-approved for Phase 2)
+- **`expo-linear-gradient`, `expo-clipboard`, `expo-sharing`.** `expo install` added the
+  `expo-sharing` config plugin to `app.json` (expected). Nothing beyond the approved list.
+
+### Defaults taken
+- **`BrandGradient` is now the real coral→teal gradient** (v4 §6, coral left / teal right),
+  colours from the theme so no hex literal enters a component. Nothing referenced it yet, so the
+  swap was self-contained. This closes the oldest open item in the repo.
+- **Dependency drift fixed inside SDK 57** with `expo install --fix` — patch bumps only, no SDK
+  upgrade. `expo install --check` had been failing.
+- **`npm audit`'s 30 advisories accepted, not fixed.** All in the build chain (Metro, `@expo/cli`,
+  `@react-native/*`); the one `critical` is `shell-quote`, reached through the bundler. None ship
+  inside the app and `npm audit fix --force` would break SDK 57. Re-check at the next SDK bump.
+- **`src/data/fixtures` is a folder, one seed set per destination**, shaped like the `ideas` table
+  columns so a set can be copied into an event on creation. The Phase 1 feed data moved to
+  `demo-ideas.ts` and is re-exported from the barrel so `discover.tsx` and `idea/[id].tsx` keep
+  working; it is deleted in B3 when those screens read the event's own ideas. — Avoids the
+  `fixtures.ts` vs `fixtures/` module-resolution trap.
+- **Fixture booking links are Civitatis *listing* pages, fetched and confirmed live**
+  (`/es/madrid/` and `/es/salou/`), not invented deep links. The Madrid prices (€36 Palacio Real,
+  €28 Prado) are the ones Civitatis actually lists. — A demo must not 404. Real affiliate deep
+  links need a partner agreement (Phase 6).
+- **Salou venue names taken from real sources**, not invented: Club Nàutic, La Goleta, Arena Tapas
+  on Passeig Jaume I; the Carrer de Carles Buïgas strip, Di Mare Club and City Hall for the night.
+  — Presenting invented businesses as real is not acceptable even in demo data.
+- **`SHARE_HOST` in `src/config/links.ts` is the single place the host is decided**, set to
+  `vaddi.app` because `app.json` already declares `applinks:vaddi.app` and the `/e` intent filter.
+  Neither host resolves yet; the file says so.
+- **Share messages are written in Spanish, app UI copy stays English.** The three templates are
+  the only strings a friend reads outside the app and the launch market is despedidas in Spain.
+  — **Open question for Juan:** the whole app's copy language. Flipping it is cheap now and
+  expensive after Phase 3.
