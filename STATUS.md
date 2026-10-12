@@ -1,6 +1,100 @@
 # STATUS
 
-*Updated 2026-09-22. Single source of truth for where the build is.*
+*Updated 2026-10-12. Single source of truth for where the build is.*
+
+## Estado real (2026-10-12)
+
+*Auditado contra el código y los comandos, no contra la tabla de la Fase 1 que viene después.
+La parte de Supabase quedó bloqueada: ver «Pendiente del conector de Supabase».*
+
+### Git
+- Rama `main`, árbol limpio, en sync con `origin/main`.
+- Último commit antes de esta sesión: `2bcaac2` (2026-09-22), *«Phase 1: move the gradient note
+  out of "Accepted (not defects)"»*.
+- El commit **«Phase 1: close-out» sí aterrizó**: `60694d3`, 2026-09-22.
+
+### Restos del close-out — todos cerrados
+| Comprobación | Resultado |
+|---|---|
+| `VADDI_V4.md` es canónico (contiene «Cache what the provider lets you cache») | ✅ |
+| `CLAUDE.md` tiene la sección `## Secrets` | ✅ |
+| `C:\Users\juanv\coplannr` | ✅ borrado |
+| `reg query HKCU\Environment /v GH_TOKEN` | ✅ no existe |
+| Valor de token en el repo o en su historia | ✅ ninguno — ver nota |
+
+**Nota sobre el grep de `ghp_`.** `git grep ghp_ HEAD` **sí** devuelve una coincidencia: está en
+`DECISIONS.md:144`, dentro de la frase que documenta los comandos de verificación del incidente.
+No hay ningún valor de token en ninguna versión del repo. El chequeo que no se autodispara es:
+```
+git grep -nE "ghp_[A-Za-z0-9]{20,}"
+```
+
+### Checks — todos verdes (tras arreglar el drift)
+| Comando | Resultado |
+|---|---|
+| `npx tsc --noEmit` | ✅ 0 |
+| `npx expo lint` | ✅ 0 |
+| `npx expo-doctor` | ✅ 21/21 |
+| `npx tsx scripts/check-contrast.ts` | ✅ 18/18 pares ≥ 4.5:1 |
+| `npx expo install --check` | ✅ *después* de arreglarlo (antes fallaba) |
+
+**Drift arreglado dentro de SDK 57** con `npx expo install --fix` — solo parches `57.0.x`, sin
+subir de SDK: `expo` .24→.28, `expo-router` .22→.26, `expo-constants` .19→.21,
+`expo-dev-client` .19→.20, `expo-splash-screen` .9→.10, `expo-linking` .10→.12,
+`@expo/ui` .19→.23, `expo-glass-effect` .3→.4.
+
+**`npm audit`: 30 avisos (1 critical, 18 high, 11 moderate), no accionables.** Todos caen en la
+cadena de build (Metro, `@expo/cli`, `@react-native/*`); la `critical` es `shell-quote`, que entra
+por el bundler. Nada de eso viaja dentro de la app. `npm audit fix --force` rompería SDK 57, que
+no se toca. Se revisa de nuevo cuando haya subida de SDK.
+
+### Variables de EAS — fallo real, arreglado hoy
+Los tres entornos de EAS (`preview`, `production`, `development`) estaban **vacíos**. Importa
+porque un build `preview` compila el JS en los servidores de EAS y `.env` está gitignored: la app
+habría arrancado sin URL de Supabase. Subidas `EXPO_PUBLIC_SUPABASE_URL` y
+`EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` a los tres entornos, visibilidad *plaintext* (ambas son
+públicas por diseño). Verificado con `eas env:list` en los tres.
+
+### Fase 1, punto por punto contra el código
+| Punto | Verificado en | Resultado |
+|---|---|---|
+| 3 tabs `Discover · Trip · Profile` | `src/app/(tabs)/_layout.tsx` | ✅ los tres |
+| Tema claro + oscuro por un solo `useTheme()` | `src/theme/ThemeProvider.tsx` | ✅ |
+| ESLint prohíbe hex fuera de `src/theme` | `eslint.config.js` (`no-restricted-syntax`) | ✅ |
+| Inter 400/500/600/700, splash retenido hasta cargar | `src/app/_layout.tsx` | ✅ (`preventAutoHideAsync` + `hideAsync`) |
+| Brand kit: mark, gradient, loader, empty state | `src/components/brand/` | ✅ 4 componentes |
+| `BrandGradient` | mismo fichero | ⚠️ relleno coral **sólido**; `LinearGradient` aparece solo en el comentario — no hay import roto |
+| `IdeaCard`: 2 variantes, expo-image, 44pt, haptics, optimista | `src/components/IdeaCard.tsx` | ✅ |
+| Fixtures de Madrid | `src/data/fixtures.ts` | ✅ 8 ideas (3 eat / 3 drink / 2 do) |
+| Cuatro estados + control dev para forzarlos | `src/components/ScreenState.tsx`, `src/dev/` | ✅ |
+| Discover: pick + 3 compactas, sin buscador/filtros/mapa | `src/app/(tabs)/discover.tsx` | ✅ 0 coincidencias de `TextInput`/`filter`/`MapView` |
+| Trip: «No trip yet» → `create-trip` | `src/app/(tabs)/trip.tsx` | ✅ |
+| Profile: nombre, estado de invitado, control dev | `src/app/(tabs)/profile.tsx` | ✅ |
+| Auth anónima al arrancar y persistida | `src/lib/session.tsx`, `src/lib/supabase.ts` | ✅ `signInAnonymously` + AsyncStorage + `persistSession` + `autoRefreshToken` |
+| `profiles` + RLS **en el servidor** | — | ⏸ no verificable sin conector |
+| Advisors de seguridad | — | ⏸ no verificable sin conector |
+| Build Android | EAS | ✅ existe uno `development` (21-sep). **Ninguno `preview`.** |
+| Build iOS | — | ⛔ no existe |
+
+### Pendiente del conector de Supabase
+El conector MCP de Supabase **no está disponible en esta sesión**. Sin él no se puede:
+- listar en vivo tablas, migraciones y políticas del proyecto `vaddi` (`mryoyzqkvinykehrwmri`);
+- crear un usuario anónimo por el endpoint de signup y confirmar que aparece su fila en
+  `profiles` — **esto importa: la pestaña Perfil no puede guardar un nombre sin esa fila**;
+- correr `get_advisors(security)`;
+- regenerar los tipos en `src/types/database.ts`.
+
+En disco solo hay `supabase/migrations/0001_profiles.sql`, `0002_profiles_harden.sql` y el test
+`supabase/tests/0001_profiles_rls.sql`. **No existe nada de `events / members / ideas /
+reactions / booking_clicks`.**
+
+### Lo que falta para empezar la Fase 2
+- Dependencias aprobadas y **sin instalar**: `expo-linear-gradient`, `expo-clipboard`,
+  `expo-sharing`. Ya están `react-native-reanimated` 4.5.1 y `@supabase/supabase-js`.
+- Fixtures: solo Madrid. No hay Salou.
+- Ningún build `preview` en ninguna plataforma.
+- **Nadie ha confirmado la Fase 1 en un móvil.** La Fase 2 no empieza antes de eso.
+- `VADDI.md` (v5) no está en la raíz del repo; la dirección vigente sigue siendo `VADDI_V4.md`.
 
 ## Phase 0 — Audit and reset — COMPLETE
 See `AUDIT.md` and `DECISIONS.md` (2026-09-21 reset). Fresh repo, SDK 57 skeleton, new Supabase
